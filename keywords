@@ -1,0 +1,45 @@
+import pandas as pd
+import openpyxl as xl
+import re
+from styleframe import styleframe, styler
+
+path2 = r'Итоговая_таблица_№1_Восстановленный.xlsx' #путь, где к Excel файлу
+wb2 = xl.load_workbook(filename=path2, read_only=True)
+ws2 = wb2['Лист1'] #Название листа с данными
+sheet_obj2 = wb2.active
+m_row2 = sheet_obj2.max_row
+
+sf = StyleFrame.read_excel('2021050410255261b7_reviewsN.xlsx', sheetname='Extracted by Outscraper')
+
+yellow_bg = Styler(bg_color='green')
+word_all = “, “
+for i2 in range(1, m_row2 + 1):
+               word_obj = sheet_obj2.cell(row=i2, column=1)
+               word_all =  str(word_obj.value)+word_all
+
+sf.apply_style_by_indexes(sf[sf['review_text'].isin((word_all))],
+                          styler_obj=yellow_bg,
+                          cols_to_style='review_text')
+
+sf.to_excel('example.xlsx').save()
+
+path3 = r'example.xlsx' #путь, где к Excel файлу
+wb3 = xl.load_workbook(filename=path1, read_only=True)
+ws3 = wb3['Extracted by Outscraper'] #Название листа с данными
+sheet_obj3 = wb3.active
+m_row3 = sheet_obj3.max_row
+
+#for i3 in ws3.iter_rows():
+#        cell_obj = sheet_obj1.cell(row=i3, column=11) # В column= подставляем номер нужной колонки
+
+def find_cells_by_color(ws3, color='00000000'):
+    ret = {}
+    for row in .iter_rows():
+        for cell in row:
+            if cell.fill.fgColor.value == color:
+                ret[cell.coordinate] = cell.value
+                ws3.delete_rows(row, 1)
+    return ret
+
+res = find_cells_by_color(ws3, color='#00B050')
+wb.save('exampl_output')
